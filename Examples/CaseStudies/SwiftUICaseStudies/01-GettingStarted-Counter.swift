@@ -43,23 +43,22 @@ struct Counter {
 struct CounterView: View {
   let store: StoreOf<Counter>
 
+  @ObservedBody
   var body: some View {
-    WithPerceptionTracking {
-      HStack {
-        Button {
-          store.send(.decrementButtonTapped)
-        } label: {
-          Image(systemName: "minus")
-        }
+    HStack {
+      Button {
+        store.send(.decrementButtonTapped)
+      } label: {
+        Image(systemName: "minus")
+      }
 
-        Text("\(store.count)")
-          .monospacedDigit()
+      Text("\(store.count)")
+        .monospacedDigit()
 
-        Button {
-          store.send(.incrementButtonTapped)
-        } label: {
-          Image(systemName: "plus")
-        }
+      Button {
+        store.send(.incrementButtonTapped)
+      } label: {
+        Image(systemName: "plus")
       }
     }
   }
