@@ -53,26 +53,32 @@ public enum ObservedBody {
     content
   }
 
-  public static func buildBlock<each Content: View>(_ content: repeat DeferredContent<each Content>) -> DeferredContent<TupleView<(repeat each Content)>> {
+  public static func buildBlock<each Content: View>(
+    _ content: repeat DeferredContent<each Content>
+  ) -> DeferredContent<TupleView<(repeat each Content)>> {
     DeferredContent(content: { ViewBuilder.buildBlock(repeat (each content).content()) })
   }
 
-  public static func buildIf<Content: View>(_ content: DeferredContent<Content>?) -> DeferredContent<Content>? {
-    content
+  public static func buildIf<Content: View>(_ content: DeferredContent<Content>?) -> DeferredContent<Content?> {
+    DeferredContent(content: { content?.content() })
   }
 
-  public static func buildEither<TrueContent: View, FalseContent: View>(first: TrueContent) -> DeferredContent<_ConditionalContent<TrueContent, FalseContent>> {
-    DeferredContent(content: { ViewBuilder.buildEither(first: first) })
+  public static func buildEither<TrueContent: View, FalseContent: View>(
+    first: DeferredContent<TrueContent>
+  ) -> DeferredContent<_ConditionalContent<TrueContent, FalseContent>> {
+    DeferredContent(content: { ViewBuilder.buildEither(first: first.content()) })
   }
 
-  public static func buildEither<TrueContent: View, FalseContent: View>(second: FalseContent) -> DeferredContent<_ConditionalContent<TrueContent, FalseContent>> {
-    DeferredContent(content: { ViewBuilder.buildEither(second: second) })
+  public static func buildEither<TrueContent: View, FalseContent: View>(
+    second: DeferredContent<FalseContent>
+  ) -> DeferredContent<_ConditionalContent<TrueContent, FalseContent>> {
+    DeferredContent(content: { ViewBuilder.buildEither(second: second.content()) })
   }
 }
 
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 extension ObservedBody {
   public static func buildLimitedAvailability<Content: View>(_ content: DeferredContent<Content>) -> DeferredContent<AnyView> {
-    DeferredContent(content: { AnyView(content.content()) })
+    DeferredContent(content: { ViewBuilder.buildLimitedAvailability(content.content()) })
   }
 }
